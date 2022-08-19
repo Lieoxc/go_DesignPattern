@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+/*
+	功能： 对一个数进行过滤，打印出能够被 2 和 4 同时整除的数
+*/
+const abortIndex = 31
+
 type intercept struct {
 	interceptorHandlers []interceptorFunc
 	index               int
@@ -24,27 +29,43 @@ func (c *intercept) Next() {
 		c.index++
 	}
 }
-func interceptoPrint() interceptorFunc {
+func (c *intercept) Abort() {
+	c.index = abortIndex
+}
+func interceptorPrint1() interceptorFunc {
 	return func(c *intercept) {
-		fmt.Println("interceptor Print xxx 0:", c.arg)
+		if c.arg%2 != 0 {
+			fmt.Println("arg:", c.arg, "intercepted by func interceptorPrint1")
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }
-func interceptoPrint1() interceptorFunc {
+func interceptorPrint2() interceptorFunc {
 	return func(c *intercept) {
-		fmt.Println("interceptor Print xxx 1:", c.arg)
+		if c.arg%4 != 0 {
+			fmt.Println("arg:", c.arg, "intercepted by func interceptorPrint2")
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }
-func interceptoPrint2() interceptorFunc {
+func interceptorPrint3() interceptorFunc {
 	return func(c *intercept) {
-		fmt.Println("interceptor Print XXX 2:", c.arg)
+		fmt.Println("arg:", c.arg, "pass all interceptor func")
 		c.Next()
+	}
+}
+func New() *intercept {
+	return &intercept{
+		arg: 0,
 	}
 }
 func main() {
-	interceptor := &intercept{}
-	interceptor.Use(interceptoPrint(), interceptoPrint1(), interceptoPrint2())
+	interceptor := New()
+	interceptor.Use(interceptorPrint1(), interceptorPrint2(), interceptorPrint3())
 
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
@@ -53,15 +74,13 @@ func main() {
 	go func() {
 		ticker := time.NewTicker(time.Second * 3) //每十分钟更新一次配置信息
 		runflag := true
-		count := 0
 		for runflag {
 			select {
 			case <-ctx.Done():
 				runflag = false
 				break
 			case <-ticker.C:
-				count++
-				//fmt.Println("xxxxx", count)
+				interceptor.arg++
 				interceptor.index = 0
 				interceptor.interceptorHandlers[0](interceptor)
 			}
