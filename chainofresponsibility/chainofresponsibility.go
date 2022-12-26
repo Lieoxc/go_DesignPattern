@@ -39,6 +39,7 @@ type AddCalculator struct {
 }
 
 func (add *AddCalculator) Do(cal *calculator) (err error) {
+	fmt.Println("do AddCalculator")
 	val := cal.operandA + cal.operandB
 	cal.Result += val
 	return nil
@@ -50,6 +51,7 @@ type DelCalculator struct {
 }
 
 func (del *DelCalculator) Do(cal *calculator) (err error) {
+	fmt.Println("do DelCalculator")
 	val := cal.operandA - cal.operandB
 	cal.Result += val
 	return nil
@@ -64,6 +66,7 @@ type StartHandler struct {
 // Do 空Handler的Do
 func (h *StartHandler) Do(cal *calculator) (err error) {
 	// 空Handler 这里什么也不做 只是载体 do nothing...
+	fmt.Println("do StartHandler")
 	return
 }
 
