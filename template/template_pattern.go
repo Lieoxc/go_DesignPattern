@@ -70,6 +70,8 @@ type DepositBusinessHandler struct {
 func (*DepositBusinessHandler) HandleBusiness() {
 	fmt.Println("账户存储很多万人民币...")
 }
+
+// DepositBusinessHandler 自己实现CheckVipIdentity，这样就覆盖掉 DefaultBusinessHandler 中对应的CheckVipIdentity方法
 func (dh *DepositBusinessHandler) CheckVipIdentity() bool {
 	return dh.userVIP
 }
