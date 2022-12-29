@@ -7,7 +7,7 @@
 
 #### 结构型模式
 - 代理模式
-
+    - [Go 实现代理模式](https://github.com/Lieoxc/go_DesignPattern/tree/main/proxy/proxy.go)
 #### 行为型模式
 - 模板模式
     - [Go实现模板模式](https://github.com/Lieoxc/go_DesignPattern/tree/main/template)
